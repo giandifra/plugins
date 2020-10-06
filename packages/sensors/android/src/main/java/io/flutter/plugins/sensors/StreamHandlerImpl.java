@@ -8,6 +8,8 @@ import android.hardware.Sensor;
 import android.hardware.SensorEvent;
 import android.hardware.SensorEventListener;
 import android.hardware.SensorManager;
+import android.util.Log;
+
 import io.flutter.plugin.common.EventChannel;
 
 class StreamHandlerImpl implements EventChannel.StreamHandler {
@@ -24,7 +26,15 @@ class StreamHandlerImpl implements EventChannel.StreamHandler {
   @Override
   public void onListen(Object arguments, EventChannel.EventSink events) {
     sensorEventListener = createSensorEventListener(events);
-    sensorManager.registerListener(sensorEventListener, sensor, sensorManager.SENSOR_DELAY_NORMAL);
+    int delay;
+    if(arguments != null){
+      delay = (int)arguments;
+    }else{
+      delay = SensorManager.SENSOR_DELAY_NORMAL;
+    }
+    assert arguments != null;
+    Log.i("StreamHandlerImpl args", String.valueOf(delay));
+    sensorManager.registerListener(sensorEventListener, sensor, delay);
   }
 
   @Override

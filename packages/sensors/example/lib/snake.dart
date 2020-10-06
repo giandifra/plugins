@@ -10,6 +10,8 @@ import 'dart:math' as math;
 import 'package:flutter/material.dart';
 import 'package:sensors/sensors.dart';
 
+final int DELAY = 10000;
+
 class Snake extends StatefulWidget {
   Snake({this.rows = 20, this.columns = 20, this.cellSize = 10.0}) {
     assert(10 <= rows);
@@ -82,7 +84,7 @@ class SnakeState extends State<Snake> {
   void initState() {
     super.initState();
     _streamSubscription =
-        accelerometerEvents.listen((AccelerometerEvent event) {
+        accelerometerEvents(delay: DELAY).listen((AccelerometerEvent event) {
       setState(() {
         acceleration = event;
       });

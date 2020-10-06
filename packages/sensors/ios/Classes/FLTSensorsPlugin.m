@@ -34,9 +34,14 @@
 const double GRAVITY = 9.8;
 CMMotionManager* _motionManager;
 
-void _initMotionManager() {
+void _initMotionManager(NSNumber* delay) {
   if (!_motionManager) {
     _motionManager = [[CMMotionManager alloc] init];
+      if(delay != nil){
+          float value = delay.floatValue / 1000000;
+          printf("%f sec",value);
+          _motionManager.deviceMotionUpdateInterval = value;
+      }
   }
 }
 
@@ -51,7 +56,7 @@ static void sendTriplet(Float64 x, Float64 y, Float64 z, FlutterEventSink sink) 
 @implementation FLTAccelerometerStreamHandler
 
 - (FlutterError*)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)eventSink {
-  _initMotionManager();
+  _initMotionManager(arguments);
   [_motionManager
       startAccelerometerUpdatesToQueue:[[NSOperationQueue alloc] init]
                            withHandler:^(CMAccelerometerData* accelerometerData, NSError* error) {
@@ -74,7 +79,7 @@ static void sendTriplet(Float64 x, Float64 y, Float64 z, FlutterEventSink sink) 
 @implementation FLTUserAccelStreamHandler
 
 - (FlutterError*)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)eventSink {
-  _initMotionManager();
+  _initMotionManager(arguments);
   [_motionManager
       startDeviceMotionUpdatesToQueue:[[NSOperationQueue alloc] init]
                           withHandler:^(CMDeviceMotion* data, NSError* error) {
@@ -96,7 +101,7 @@ static void sendTriplet(Float64 x, Float64 y, Float64 z, FlutterEventSink sink) 
 @implementation FLTGyroscopeStreamHandler
 
 - (FlutterError*)onListenWithArguments:(id)arguments eventSink:(FlutterEventSink)eventSink {
-  _initMotionManager();
+  _initMotionManager(arguments);
   [_motionManager
       startGyroUpdatesToQueue:[[NSOperationQueue alloc] init]
                   withHandler:^(CMGyroData* gyroData, NSError* error) {
