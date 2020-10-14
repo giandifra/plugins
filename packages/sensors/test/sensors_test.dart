@@ -17,7 +17,8 @@ void main() {
     const List<double> sensorData = <double>[1.0, 2.0, 3.0];
     _initializeFakeSensorChannel(channelName, sensorData);
 
-    final AccelerometerEvent event = await accelerometerEvents.first;
+    final AccelerometerEvent event =
+        await accelerometerEvents(delay: 10000).first;
 
     expect(event.x, sensorData[0]);
     expect(event.y, sensorData[1]);
@@ -29,7 +30,7 @@ void main() {
     const List<double> sensorData = <double>[3.0, 4.0, 5.0];
     _initializeFakeSensorChannel(channelName, sensorData);
 
-    final GyroscopeEvent event = await gyroscopeEvents.first;
+    final GyroscopeEvent event = await gyroscopeEvents(delay: 10000).first;
 
     expect(event.x, sensorData[0]);
     expect(event.y, sensorData[1]);
@@ -41,7 +42,8 @@ void main() {
     const List<double> sensorData = <double>[6.0, 7.0, 8.0];
     _initializeFakeSensorChannel(channelName, sensorData);
 
-    final UserAccelerometerEvent event = await userAccelerometerEvents.first;
+    final UserAccelerometerEvent event =
+        await userAccelerometerEvents(delay: 10000).first;
 
     expect(event.x, sensorData[0]);
     expect(event.y, sensorData[1]);

@@ -15,7 +15,8 @@ void main() {
     final Completer<AccelerometerEvent> completer =
         Completer<AccelerometerEvent>();
     StreamSubscription<AccelerometerEvent> subscription;
-    subscription = accelerometerEvents.listen((AccelerometerEvent event) {
+    subscription =
+        accelerometerEvents(delay: 10000).listen((AccelerometerEvent event) {
       completer.complete(event);
       subscription.cancel();
     });

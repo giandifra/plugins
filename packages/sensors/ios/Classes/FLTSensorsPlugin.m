@@ -45,11 +45,13 @@ void _initMotionManager(NSNumber* delay) {
   }
 }
 
-static void sendTriplet(Float64 x, Float64 y, Float64 z, FlutterEventSink sink) {
+static void sendTriplet(Float64 x, Float64 y, Float64 z, Float64 accuracy, Float64 timestamp, FlutterEventSink sink) {
   NSMutableData* event = [NSMutableData dataWithCapacity:3 * sizeof(Float64)];
   [event appendBytes:&x length:sizeof(Float64)];
   [event appendBytes:&y length:sizeof(Float64)];
   [event appendBytes:&z length:sizeof(Float64)];
+  [event appendBytes:&accuracy length:sizeof(Float64)];
+  [event appendBytes:&timestamp length:sizeof(Float64)];
   sink([FlutterStandardTypedData typedDataWithFloat64:event]);
 }
 
@@ -61,10 +63,12 @@ static void sendTriplet(Float64 x, Float64 y, Float64 z, FlutterEventSink sink) 
       startAccelerometerUpdatesToQueue:[[NSOperationQueue alloc] init]
                            withHandler:^(CMAccelerometerData* accelerometerData, NSError* error) {
                              CMAcceleration acceleration = accelerometerData.acceleration;
+                             NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
+
                              // Multiply by gravity, and adjust sign values to
                              // align with Android.
                              sendTriplet(-acceleration.x * GRAVITY, -acceleration.y * GRAVITY,
-                                         -acceleration.z * GRAVITY, eventSink);
+                                         -acceleration.z * GRAVITY, -1, timeStamp * 1000, eventSink);
                            }];
   return nil;
 }
@@ -84,9 +88,10 @@ static void sendTriplet(Float64 x, Float64 y, Float64 z, FlutterEventSink sink) 
       startDeviceMotionUpdatesToQueue:[[NSOperationQueue alloc] init]
                           withHandler:^(CMDeviceMotion* data, NSError* error) {
                             CMAcceleration acceleration = data.userAcceleration;
+                            NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
                             // Multiply by gravity, and adjust sign values to align with Android.
                             sendTriplet(-acceleration.x * GRAVITY, -acceleration.y * GRAVITY,
-                                        -acceleration.z * GRAVITY, eventSink);
+                                        -acceleration.z * GRAVITY, -1, timeStamp * 1000, eventSink);
                           }];
   return nil;
 }
@@ -106,7 +111,8 @@ static void sendTriplet(Float64 x, Float64 y, Float64 z, FlutterEventSink sink) 
       startGyroUpdatesToQueue:[[NSOperationQueue alloc] init]
                   withHandler:^(CMGyroData* gyroData, NSError* error) {
                     CMRotationRate rotationRate = gyroData.rotationRate;
-                    sendTriplet(rotationRate.x, rotationRate.y, rotationRate.z, eventSink);
+                    NSTimeInterval timeStamp = [[NSDate date] timeIntervalSince1970];
+                    sendTriplet(rotationRate.x, rotationRate.y, rotationRate.z, -1, timeStamp * 1000, eventSink);
                   }];
   return nil;
 }

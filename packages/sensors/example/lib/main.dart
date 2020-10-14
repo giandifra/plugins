@@ -41,20 +41,20 @@ class _MyHomePageState extends State<MyHomePage> {
   static const int _snakeColumns = 20;
   static const double _snakeCellSize = 10.0;
 
-  List<double> _accelerometerValues;
-  List<double> _userAccelerometerValues;
-  List<double> _gyroscopeValues;
+  List<num> _accelerometerValues;
+  List<num> _userAccelerometerValues;
+  List<num> _gyroscopeValues;
   List<StreamSubscription<dynamic>> _streamSubscriptions =
       <StreamSubscription<dynamic>>[];
 
   @override
   Widget build(BuildContext context) {
     final List<String> accelerometer =
-        _accelerometerValues?.map((double v) => v.toStringAsFixed(1))?.toList();
+        _accelerometerValues?.map((num v) => v.toStringAsFixed(1))?.toList();
     final List<String> gyroscope =
-        _gyroscopeValues?.map((double v) => v.toStringAsFixed(1))?.toList();
+        _gyroscopeValues?.map((num v) => v.toStringAsFixed(1))?.toList();
     final List<String> userAccelerometer = _userAccelerometerValues
-        ?.map((double v) => v.toStringAsFixed(1))
+        ?.map((num v) => v.toStringAsFixed(1))
         ?.toList();
 
     return Scaffold(
@@ -125,20 +125,39 @@ class _MyHomePageState extends State<MyHomePage> {
     super.initState();
     _streamSubscriptions.add(
         accelerometerEvents(delay: DELAY).listen((AccelerometerEvent event) {
+      print(DateTime.fromMillisecondsSinceEpoch(event.timestamp));
       setState(() {
-        _accelerometerValues = <double>[event.x, event.y, event.z];
+        _accelerometerValues = <num>[
+          event.x,
+          event.y,
+          event.z,
+          event.accuracy,
+          event.timestamp
+        ];
       });
     }));
     _streamSubscriptions
         .add(gyroscopeEvents(delay: DELAY).listen((GyroscopeEvent event) {
       setState(() {
-        _gyroscopeValues = <double>[event.x, event.y, event.z];
+        _gyroscopeValues = <num>[
+          event.x,
+          event.y,
+          event.z,
+          event.accuracy,
+          event.timestamp
+        ];
       });
     }));
     _streamSubscriptions.add(userAccelerometerEvents(delay: DELAY)
         .listen((UserAccelerometerEvent event) {
       setState(() {
-        _userAccelerometerValues = <double>[event.x, event.y, event.z];
+        _userAccelerometerValues = <num>[
+          event.x,
+          event.y,
+          event.z,
+          event.accuracy,
+          event.timestamp
+        ];
       });
     }));
   }

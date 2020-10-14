@@ -20,7 +20,7 @@ const EventChannel _gyroscopeEventChannel =
 /// a particular direction.
 class AccelerometerEvent {
   /// Contructs an instance with the given [x], [y], and [z] values.
-  AccelerometerEvent(this.x, this.y, this.z);
+  AccelerometerEvent(this.x, this.y, this.z, this.accuracy, this.timestamp);
 
   /// Acceleration force along the x axis (including gravity) measured in m/s^2.
   ///
@@ -42,15 +42,27 @@ class AccelerometerEvent {
   /// towards the user and negative mean it is moving away from them.
   final double z;
 
+  /// Timestamp
+  final int accuracy;
+
+  final int timestamp;
+
   @override
-  String toString() => '[AccelerometerEvent (x: $x, y: $y, z: $z)]';
+  String toString() =>
+      '[AccelerometerEvent (x: $x, y: $y, z: $z, accuracy: $accuracy)]';
 }
 
 /// Discrete reading from a gyroscope. Gyroscopes measure the rate or rotation of
 /// the device in 3D space.
 class GyroscopeEvent {
   /// Contructs an instance with the given [x], [y], and [z] values.
-  GyroscopeEvent(this.x, this.y, this.z);
+  GyroscopeEvent(
+    this.x,
+    this.y,
+    this.z,
+    this.accuracy,
+    this.timestamp,
+  );
 
   /// Rate of rotation around the x axis measured in rad/s.
   ///
@@ -74,6 +86,10 @@ class GyroscopeEvent {
   /// on.
   final double z;
 
+  final int accuracy;
+
+  final int timestamp;
+
   @override
   String toString() => '[GyroscopeEvent (x: $x, y: $y, z: $z)]';
 }
@@ -83,7 +99,13 @@ class GyroscopeEvent {
 /// [AccelerometerEvent], this event does not include the effects of gravity.
 class UserAccelerometerEvent {
   /// Contructs an instance with the given [x], [y], and [z] values.
-  UserAccelerometerEvent(this.x, this.y, this.z);
+  UserAccelerometerEvent(
+    this.x,
+    this.y,
+    this.z,
+    this.accuracy,
+    this.timestamp,
+  );
 
   /// Acceleration force along the x axis (excluding gravity) measured in m/s^2.
   ///
@@ -105,20 +127,28 @@ class UserAccelerometerEvent {
   /// towards the user and negative mean it is moving away from them.
   final double z;
 
+  final int accuracy;
+
+  final int timestamp;
+
   @override
-  String toString() => '[UserAccelerometerEvent (x: $x, y: $y, z: $z)]';
+  String toString() =>
+      '[UserAccelerometerEvent (x: $x, y: $y, z: $z, accuracy: $accuracy)]';
 }
 
 AccelerometerEvent _listToAccelerometerEvent(List<double> list) {
-  return AccelerometerEvent(list[0], list[1], list[2]);
+  return AccelerometerEvent(list[0], list[1], list[2],
+      list[list.length - 2].toInt(), list[list.length - 1].toInt());
 }
 
 UserAccelerometerEvent _listToUserAccelerometerEvent(List<double> list) {
-  return UserAccelerometerEvent(list[0], list[1], list[2]);
+  return UserAccelerometerEvent(list[0], list[1], list[2],
+      list[list.length - 2].toInt(), list.last.toInt());
 }
 
 GyroscopeEvent _listToGyroscopeEvent(List<double> list) {
-  return GyroscopeEvent(list[0], list[1], list[2]);
+  return GyroscopeEvent(list[0], list[1], list[2],
+      list[list.length - 2].toInt(), list.last.toInt());
 }
 
 Stream<AccelerometerEvent> _accelerometerEvents;

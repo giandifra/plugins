@@ -33,7 +33,6 @@ class StreamHandlerImpl implements EventChannel.StreamHandler {
       delay = SensorManager.SENSOR_DELAY_NORMAL;
     }
     assert arguments != null;
-    Log.i("StreamHandlerImpl args", String.valueOf(delay));
     sensorManager.registerListener(sensorEventListener, sensor, delay);
   }
 
@@ -49,10 +48,12 @@ class StreamHandlerImpl implements EventChannel.StreamHandler {
 
       @Override
       public void onSensorChanged(SensorEvent event) {
-        double[] sensorValues = new double[event.values.length];
+        double[] sensorValues = new double[event.values.length + 2];
         for (int i = 0; i < event.values.length; i++) {
           sensorValues[i] = event.values[i];
         }
+        sensorValues[event.values.length] = event.accuracy;
+        sensorValues[event.values.length + 1] = (double)event.timestamp;
         events.success(sensorValues);
       }
     };
