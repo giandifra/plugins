@@ -6,13 +6,13 @@ import 'dart:async';
 import 'package:flutter/services.dart';
 
 const EventChannel _accelerometerEventChannel =
-    EventChannel('plugins.flutter.io/sensors/accelerometer');
+EventChannel('plugins.flutter.io/sensors/accelerometer');
 
 const EventChannel _userAccelerometerEventChannel =
-    EventChannel('plugins.flutter.io/sensors/user_accel');
+EventChannel('plugins.flutter.io/sensors/user_accel');
 
 const EventChannel _gyroscopeEventChannel =
-    EventChannel('plugins.flutter.io/sensors/gyroscope');
+EventChannel('plugins.flutter.io/sensors/gyroscope');
 
 /// Discrete reading from an accelerometer. Accelerometers measure the velocity
 /// of the device. Note that these readings include the effects of gravity. Put
@@ -57,12 +57,12 @@ class AccelerometerEvent {
 class GyroscopeEvent {
   /// Contructs an instance with the given [x], [y], and [z] values.
   GyroscopeEvent(
-    this.x,
-    this.y,
-    this.z,
-    this.accuracy,
-    this.timestamp,
-  );
+      this.x,
+      this.y,
+      this.z,
+      this.accuracy,
+      this.timestamp,
+      );
 
   /// Rate of rotation around the x axis measured in rad/s.
   ///
@@ -100,12 +100,12 @@ class GyroscopeEvent {
 class UserAccelerometerEvent {
   /// Contructs an instance with the given [x], [y], and [z] values.
   UserAccelerometerEvent(
-    this.x,
-    this.y,
-    this.z,
-    this.accuracy,
-    this.timestamp,
-  );
+      this.x,
+      this.y,
+      this.z,
+      this.accuracy,
+      this.timestamp,
+      );
 
   /// Acceleration force along the x axis (excluding gravity) measured in m/s^2.
   ///
@@ -166,7 +166,17 @@ Stream<UserAccelerometerEvent> _userAccelerometerEvents;
 //   return _accelerometerEvents;
 // }
 
+
+void clearAccelerometerEventsStream(){
+  _accelerometerEvents = null;
+}
+
+void clearGyroscopeEventsStream(){
+  _gyroscopeEvents = null;
+}
+
 /// A broadcast stream of events from the device accelerometer.
+/// if you not set [delay] the default value is 200000
 Stream<AccelerometerEvent> accelerometerEvents({int delay}) {
   if (_accelerometerEvents == null) {
     _accelerometerEvents = _accelerometerEventChannel
@@ -213,7 +223,7 @@ Stream<UserAccelerometerEvent> userAccelerometerEvents({int delay}) {
     _userAccelerometerEvents = _userAccelerometerEventChannel
         .receiveBroadcastStream(delay)
         .map((dynamic event) =>
-            _listToUserAccelerometerEvent(event.cast<double>()));
+        _listToUserAccelerometerEvent(event.cast<double>()));
   }
   return _userAccelerometerEvents;
 }
